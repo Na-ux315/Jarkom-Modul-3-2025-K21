@@ -90,6 +90,8 @@ Setelah konfigurasi selesai kita restart DHCP server, jalankan:
 service isc-dhcp-server restart
 ```
 
+<img width="1919" height="87" alt="image" src="https://github.com/user-attachments/assets/ee75d142-0c38-4af2-8780-52b1c557d8cb" />
+
 Lakuin Instalasi DHCP Relay (Durin) dengan jalankan perintah berikut:
 
 ```bash
