@@ -10,15 +10,14 @@ Member :
 
 </div>
 
-- [Question 1](#question-1)
-- [Question 2](#question-2)
+- [Question 1 & 2](#question-1 & 2)
 - [Question 3](#question-3)
 
 ## Topologi
 
 <img width="1585" height="820" alt="image" src="https://github.com/user-attachments/assets/e92391cc-3440-41a9-999a-109d58d82c8a" />
 
-## Question 1
+## Question 1 & 2
 
 > Di awal Zaman Kedua, setelah kehancuran Beleriand, para Valar menugaskan untuk membangun kembali jaringan komunikasi antar kerajaan. Para Valar menyalakan Minastir, Aldarion, Erendis, Amdir, Palantir, Narvi, Elros, Pharazon, Elendil, Isildur, Anarion, Galadriel, Celeborn, Oropher, Miriel, Amandil, Gilgalad, Celebrimbor, Khamul, dan pastikan setiap node (selain Durin sang penghubung antar dunia) dapat sementara berkomunikasi dengan Valinor/Internet (nameserver 192.168.122.1) untuk menerima instruksi awal.
 
