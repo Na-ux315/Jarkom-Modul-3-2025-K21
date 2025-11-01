@@ -130,6 +130,8 @@ Restart DHCP Relay:
 service isc-dhcp-relay restart
 ```
 
+<img width="1034" height="211" alt="image" src="https://github.com/user-attachments/assets/4ad41f1a-30ec-4db9-a664-6e5b31f6ddd6" />
+
 Untuk semua client dinamis (misal Khamul, Gilgalad, Amandil) ubah konfigurasi interface menjadi:
 
 ```bash
@@ -138,6 +140,8 @@ iface eth0 inet dhcp
 ```
 
 Cek IP hasil lease DHCP pakai `ip a` misal di Khamul
+
+<img width="1919" height="910" alt="image" src="https://github.com/user-attachments/assets/ffa9e664-6596-4ea1-a894-833d5e413776" />
 
 ## Question 1
 
