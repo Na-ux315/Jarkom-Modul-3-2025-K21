@@ -106,7 +106,7 @@ Edit konfigurasi DHCP relay:
 nano /etc/default/isc-dhcp-relay
 
 SERVERS=”10.74.4.4”
-INTERFACES="eth1 eth2 eth3 eth4 eth5
+INTERFACES=”eth1 eth2 eth3 eth4 eth5”
 OPTIONS=””
 ```
 
