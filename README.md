@@ -16,7 +16,7 @@ Member :
 
 ## Topologi
 
-
+<img width="1585" height="820" alt="image" src="https://github.com/user-attachments/assets/e92391cc-3440-41a9-999a-109d58d82c8a" />
 
 Lakuin Instalasi DHCP Server (Aldarion) dengan jalankan perintah berikut:
 
