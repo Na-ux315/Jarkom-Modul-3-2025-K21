@@ -179,6 +179,74 @@ ip route show
 
 <img width="1906" height="869" alt="Screenshot 2025-11-01 132555" src="https://github.com/user-attachments/assets/5359c7a4-978d-4741-a394-db3b42a4d1fe" />
 
+## Question 3
+
+> Untuk mengontrol arus informasi ke dunia luar (Valinor/Internet), sebuah menara pengawas, Minastir didirikan. Minastir mengatur agar semua node (kecuali Durin) hanya dapat mengirim pesan ke luar Arda setelah melewati pemeriksaan di Minastir.
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
+```bash
+
+```
+
 ```bash
 
 ```
@@ -253,6 +321,13 @@ ip route show
 
 ```bash
 
+```
+
+```bash
+
+```
+
+```bash
 ```
 
 ```bash
