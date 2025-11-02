@@ -183,8 +183,11 @@ ip route show
 
 > Untuk mengontrol arus informasi ke dunia luar (Valinor/Internet), sebuah menara pengawas, Minastir didirikan. Minastir mengatur agar semua node (kecuali Durin) hanya dapat mengirim pesan ke luar Arda setelah melewati pemeriksaan di Minastir.
 
-```bash
+Aktifkan IP Forwarding di Minastir
 
+```bash
+echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+sysctl -p
 ```
 
 ```bash
