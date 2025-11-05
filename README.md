@@ -155,12 +155,7 @@ ping 192.168.122.1
 ```
 
 2. Test DNS resolution:
-```bash
-echo "nameserver 192.168.122.1" > /etc/resolv.conf
 
-# Test dari client mana saja
-ping google.com -c 5
-```
 Jika DNS resolution bermasalah lakukan dibawah ini
 ```bash
 nano /etc/resolv.conf
@@ -168,6 +163,14 @@ nano /etc/resolv.conf
 #Tambahkan
 nameserver 8.8.8.8
 nameserver 1.1.1.1
+
+#Atau
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+```
+
+```bash
+# Test dari client mana saja
+ping google.com -c 5
 ```
 
 3. Verifikasi routing:
