@@ -156,6 +156,8 @@ ping 192.168.122.1
 
 2. Test DNS resolution:
 ```bash
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+
 # Test dari client mana saja
 ping google.com -c 5
 ```
