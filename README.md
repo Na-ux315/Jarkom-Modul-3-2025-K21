@@ -188,22 +188,254 @@ ip route show
 
 > Untuk mengontrol arus informasi ke dunia luar (Valinor/Internet), sebuah menara pengawas, Minastir didirikan. Minastir mengatur agar semua node (kecuali Durin) hanya dapat mengirim pesan ke luar Arda setelah melewati pemeriksaan di Minastir.
 
+Lakuin Instalasi package BIND9 (Minastir) dengan jalankan perintah berikut:
 ```bash
-
+apt-get update && apt-get install bind9 -y
 ```
 
+Edit konfigurasi DNS reslover Minastir
 ```bash
+nano /etc/bind/named.conf.options
 
+options {
+    directory "/var/cache/bind";
+    listen-on { any; };
+    listen-on-v6 { any; };
+    allow-query { any; };
+
+    // Forward ke DNS external (Valinor/Internet)
+    forwarders {
+        192.168.122.1;
+        8.8.8.8;
+    };
+
+    // Optional: batasi recursive DNS hanya untuk internal
+    // allow-recursion { 10.74.0.0/16; };
+
+    dnssec-validation auto;
+    auth-nxdomain no;
+};
 ```
 
+Lalu, mengubah konfigurasi DHCP agar semua klien menggunakan DNS Minastir. Pada Aldarion (DHCP Server) edit:
 ```bash
+nano /etc/dhcp/dhcpd.conf
 
+# Update setiap subnet DNS diarahkan ke Minastir
+# Subnet Keluarga Manusia
+subnet 10.74.1.0 netmask 255.255.255.0 {
+    range 10.74.1.6 10.74.1.34;
+    range 10.74.1.68 10.74.1.94;
+    option routers 10.74.1.1;
+    option broadcast-address 10.74.1.255;
+    option domain-name-servers 10.74.5.2;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+# Subnet Keluarga Peri
+subnet 10.74.2.0 netmask 255.255.255.0 {
+    range 10.74.2.35 10.74.2.67;
+    range 10.74.2.96 10.74.2.121;
+    option routers 10.74.2.1;
+    option broadcast-address 10.74.2.255;
+    option domain-name-servers 10.74.5.2;
+    default-lease-time 600;
+    max-lease-time 7200;
+}
+
+# Subnet Kurcaci
+subnet 10.74.3.0 netmask 255.255.255.0 {
+    option routers 10.74.3.1;
+    option broadcast-address 10.74.3.255;
+    option domain-name-servers 10.74.5.2;
+}
+
+# Subnet Server & Database
+subnet 10.74.4.0 netmask 255.255.255.0 {
+    option routers 10.74.4.1;
+    option broadcast-address 10.74.4.255;
+    option domain-name-servers 10.74.5.2;
+}
+
+host Khamul {
+    hardware ethernet 02:42:a2:bd:ad:00;
+    fixed-address 10.74.3.95;
+}
 ```
 
+Restart DHCP
 ```bash
-
+service isc-dhcp-server restart
 ```
 
+Restart service
 ```bash
+service named restart
+```
 
+Setelah itu kita verivikasi pada klien lain. Pastikan klien DHCP mendapat DNS baru
+```bash
+cat /etc/resolv.conf
+```
+
+Coba ping di Khamul
+```bash
+ping google.com -c 3
+```
+
+## Question 4
+
+> Ratu Erendis, sang pembuat peta, menetapkan nama resmi untuk wilayah utama (<xxxx>.com). Ia menunjuk dirinya (ns1.<xxxx>.com) dan muridnya Amdir (ns2.<xxxx>.com) sebagai penjaga peta resmi. Setiap lokasi penting (Palantir, Elros, Pharazon, Elendil, Isildur, Anarion, Galadriel, Celeborn, Oropher) diberikan nama domain unik yang menunjuk ke lokasi fisik tanah mereka. Pastikan Amdir selalu menyalin peta (master-slave) dari Erendis dengan setia.
+
+Konfigurasi DNS Master (Erendis)
+Lakuin Instalasi package BIND9 dengan jalankan perintah berikut:
+```bash
+apt-get update && apt-get install bind9 -y
+```
+
+Konfigurasi forwarders & transfer di master
+```bash
+nano /etc/bind/named.conf.options
+
+options {
+    directory "/var/cache/bind";
+    listen-on { any; };
+    listen-on-v6 { any; };
+    allow-query { any; };
+    allow-transfer { 10.74.3.3; }; // Amdir (slave)
+
+    forwarders {
+        192.168.122.1;
+        8.8.8.8;
+    };
+
+    dnssec-validation auto;
+    auth-nxdomain no;
+};
+```
+
+Tambahkan zona master
+```bash
+nano /etc/bind/named.conf.local
+
+zone "k21.com" {
+    type master;
+    file "/etc/bind/zones/k21.com.db";
+    allow-transfer { 10.74.3.3; };
+};
+
+zone "1.74.10.in-addr.arpa" {
+    type master;
+    file "/etc/bind/zones/rev.1.74.10.in-addr.arpa";
+};
+```
+
+Buat direktori zone
+```bash
+mkdir /etc/bind/zones
+```
+
+File zona forward lookup (k21.com.db)
+```bash
+nano /etc/bind/zones/k21.com.db
+
+$TTL 604800
+@   IN  SOA ns1.k21.com. root.k21.com. (
+        2024110101 ; Serial
+        604800     ; Refresh
+        86400      ; Retry
+        2419200    ; Expire
+        604800 )   ; Negative Cache TTL
+
+; Name Servers
+@       IN  NS  ns1.k21.com.
+@       IN  NS  ns2.k21.com.
+
+; A Records
+@       IN  A       10.74.1.2
+ns1     IN  A       10.74.3.2   ; Erendis (master)
+ns2     IN  A       10.74.3.3   ; Amdir (slave)
+
+; Lokasi penting
+palantir    IN A 10.74.1.10
+elros       IN A 10.74.1.11
+pharazon    IN A 10.74.1.12
+elendil     IN A 10.74.1.13
+isildur     IN A 10.74.1.14
+anarion     IN A 10.74.1.15
+galadriel   IN A 10.74.2.20
+celeborn    IN A 10.74.2.21
+oropher     IN A 10.74.2.22
+
+; CNAME
+www     IN CNAME k21.com.
+
+2.3     IN      PTR     ns1.k21.com.
+3.3     IN      PTR     ns2.k21.com.
+10.1    IN      PTR     palantir.k21.com.
+11.1    IN      PTR     elros.k21.com.
+```
+
+Restart dan check
+```bash
+service named restart
+
+named-checkconf
+
+named-checkzone k21.com /etc/bind/zones/k21.com.db
+
+service named status
+```
+
+Konfigurasi DNS Slave (Amdir)
+Lakuin Instalasi package BIND9 dengan jalankan perintah berikut:
+```bash
+apt-get update && apt-get install bind9 -y
+```
+
+Konfigurasi forwarder (Slave)
+```bash
+nano /etc/bind/named.conf.options
+
+options {
+    directory "/var/cache/bind";
+    listen-on { any; };
+    listen-on-v6 { any; };
+    allow-query { any; };
+
+    forwarders {
+        192.168.122.1;
+        8.8.8.8;
+    };
+
+    dnssec-validation auto;
+    auth-nxdomain no;
+};
+```
+
+Daftarkan zona slave
+```bash
+nano /etc/bind/named.conf.local
+
+zone "k21.com" {
+    type slave;
+    file "/var/cache/bind/k21.com.db";
+    masters { 10.74.3.2; }; // Master: Erendis
+};
+
+zone "1.74.10.in-addr.arpa" {
+    type slave;
+    file "/var/cache/bind/rev.1.74.10.in-addr.arpa";
+    masters { 10.74.3.2; };
+};
+```
+
+Restart
+```bash
+service named restart
+```
+Coba di client lain (contoh Khamul)
+```bash
+nslookup k21.com
 ```
